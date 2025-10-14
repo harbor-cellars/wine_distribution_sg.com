@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Harbor Cellars - Fine Wines</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP for Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    /* --- Reset & Basics --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #fff;
+      background-color: #000;
+      overflow-x: hidden;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* --- Video Background --- */
+    #hero-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.4;
+    }
+    
+    /* Fallback animated background if video doesn't load */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(45deg, #1a0a00, #3d1f0f, #5c2e1a, #3d1f0f, #1a0a00);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Navigation --- */
+    nav {
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(243, 156, 18, 0.3);
+    }
+    nav .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+      cursor: pointer;
+    }
+    nav .logo img {
+      height: 50px;
+      width: auto;
+      filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
+      transition: transform 0.3s;
+    }
+    nav .logo:hover img {
+      transform: scale(1.1);
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+    }
+    nav ul li a {
+      transition: color 0.3s, text-shadow 0.3s;
+      font-size: 1rem;
+    }
+    nav ul li a:hover {
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      height: 100vh;
+      padding: 0 20px;
+      position: relative;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(0,0,0,0.6) 70%);
+      z-index: 0;
+    }
+    .hero h1 {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      text-shadow: 1px 1px 10px rgba(0,0,0,0.8);
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease 0.2s backwards;
+    }
+    .hero .btn {
+      padding: 15px 40px;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      color: #000;
+      font-weight: bold;
+      border-radius: 50px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease 0.4s backwards;
+      box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+      display: inline-block;
+    }
+    .hero .btn:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 10px 40px rgba(243, 156, 18, 0.6);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- Featured Products --- */
+    #featured {
+      padding: 80px 50px;
+      background: rgba(0,0,0,0.85);
+      text-align: center;
+      position: relative;
+      min-height: 600px;
+    }
+    #featured h2 {
+      margin-bottom: 50px;
+      font-size: 2.8rem;
+      color: #f39c12;
+      text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+    }
+    #product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .product-card {
+      background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.5s, box-shadow 0.3s;
+      border: 1px solid rgba(243, 156, 18, 0.2);
+      position: relative;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+    .product-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(243, 156, 18, 0.1), transparent);
+      transition: left 0.5s;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .product-card:hover::before {
+      left: 100%;
+    }
+    .product-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(243, 156, 18, 0.3);
+      border-color: #f39c12;
+    }
+    .product-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: block;
+      background: linear-gradient(135deg, #2d1810, #1a0f08);
+    }
+    .product-card h3 {
+      padding: 20px 15px 10px;
+      font-size: 1.3rem;
+      text-align: center;
+      color: #fff;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-card .price {
+      text-align: center;
+      padding: 10px 15px;
+      color: #f39c12;
+      font-weight: bold;
+      font-size: 1.4rem;
+    }
+    .product-card .stock {
+      text-align: center;
+      padding: 0 15px 15px;
+      color: #888;
+      font-size: 0.9rem;
+    }
+    .product-card .view-btn {
+      display: block;
+      text-align: center;
+      padding: 12px 0;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      color: #000;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin-top: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    .product-card .view-btn:hover {
+      background: linear-gradient(45deg, #e67e22, #d35400);
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 100px 0;
+      font-size: 1.3rem;
+      color: #f39c12;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* --- Footer --- */
+    footer {
+      background: #0a0a0a;
+      padding: 40px 50px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+      border-top: 1px solid rgba(243, 156, 18, 0.2);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      nav ul {
+        gap: 15px;
+        font-size: 0.9rem;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      #featured {
+        padding: 60px 20px;
+      }
+      #featured h2 {
+        font-size: 2rem;
+      }
+      #product-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background (fallback) -->
+  <div class="bg-animation"></div>
+
+  <!-- Video Background -->
+  <video autoplay muted loop playsinline id="hero-video">
+    <source src=https://www.pexels.com/download/video/8093235/ width=1280" type="video/mp4">
+  </video>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="logo">
+      <img src="https://harbor-cellars.github.io/Singapore.com/assets/images/logo.png" alt="Harbor Cellars Logo" onerror="this.style.display='none'">
+      <span>Harbor Cellars</span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Harbor Cellars</h1>
+    <p>Discover exquisite wines from around the world</p>
+    <a href="products.html" class="btn">Explore Our Collection</a>
+  </section>
+
+  <!-- Featured Products -->
+  <section id="featured">
+    <h2>Featured Wines</h2>
+    <div id="product-grid">
+      <div class="loading">Loading our finest wines...</div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Harbor Cellars. All rights reserved. | Contact: info@harborcellars.com
+  </footer>
+
+  <!-- JS: Fetch Products from MockAPI -->
+  <script>
+    const productGrid = document.getElementById("product-grid");
+    const apiURL = "https://68e5c90621dd31f22cc2f478.mockapi.io/v1/products";
+
+    // Fallback products
+    const fallbackProducts = [
+      { 
+        name: 'Château Margaux 2015', 
+        price: '899.99', 
+        stock: 12,
+        imageUrl: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&h=300&fit=crop'
+      },
+      { 
+        name: 'Dom Pérignon Vintage', 
+        price: '299.99', 
+        stock: 25,
+        imageUrl: 'https://images.unsplash.com/photo-1547595628-c61a29f5b1f5?w=300&h=300&fit=crop'
+      },
+      { 
+        name: 'Opus One 2018', 
+        price: '449.99', 
+        stock: 18,
+        imageUrl: 'https://images.unsplash.com/photo-1586370434639-0fe43b2d32d6?w=300&h=300&fit=crop'
+      },
+      { 
+        name: 'Penfolds Grange', 
+        price: '649.99', 
+        stock: 8,
+        imageUrl: 'https://images.unsplash.com/photo-1566759442071-9a5c3cf9c1f6?w=300&h=300&fit=crop'
+      },
+      { 
+        name: 'Sassicaia 2017', 
+        price: '329.99', 
+        stock: 15,
+        imageUrl: 'https://images.unsplash.com/photo-1596225832312-e2c8a5d50c12?w=300&h=300&fit=crop'
+      },
+      { 
+        name: 'Screaming Eagle', 
+        price: '2999.99', 
+        stock: 3,
+        imageUrl: 'https://images.unsplash.com/photo-1568384563149-af5bb340d72e?w=300&h=300&fit=crop'
+      }
+    ];
+
+    function displayProducts(products) {
+      productGrid.innerHTML = "";
+      
+      const productsToShow = products.slice(0, 6);
+      
+      productsToShow.forEach((product, index) => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.style.animationDelay = `${index * 0.1}s`;
+        
+        const imageUrl = product.imageUrl || product.image || 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&h=300&fit=crop';
+        const productName = product.name || 'Premium Wine';
+        const productPrice = parseFloat(product.price || 0).toFixed(2);
+        const productStock = product.stock !== undefined ? product.stock : '';
+        
+        card.innerHTML = `
+          <img src="${imageUrl}" alt="${productName}" onerror="this.src='https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&h=300&fit=crop'">
+          <h3>${productName}</h3>
+          <div class="price">$${productPrice}</div>
+          ${productStock !== '' ? `<div class="stock">Stock: ${productStock} bottles</div>` : ''}
+          <a href="products.html" class="view-btn">View Details</a>
+        `;
+        
+        productGrid.appendChild(card);
+      });
+
+      // GSAP animation (if available)
+      if (typeof gsap !== 'undefined') {
+        gsap.from(".product-card", {
+          duration: 0.8,
+          opacity: 0,
+          y: 50,
+          stagger: 0.12,
+          ease: "power3.out"
+        });
+      }
+    }
+
+    // Fetch products from API
+    fetch(apiURL)
+      .then(res => {
+        if (!res.ok) throw new Error('API response not ok');
+        return res.json();
+      })
+      .then(products => {
+        if (!products || products.length === 0) {
+          throw new Error('No products available');
+        }
+        displayProducts(products);
+      })
+      .catch(err => {
+        console.log("Using fallback products:", err.message);
+        displayProducts(fallbackProducts);
+      });
+
+    // Video error handling
+    const video = document.getElementById('hero-video');
+    video.addEventListener('error', function() {
+      console.log('Video failed to load, using animated background');
+      this.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

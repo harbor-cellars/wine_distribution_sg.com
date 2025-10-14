@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Services - Harbor Cellars</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000;
+      color: #fff;
+      line-height: 1.6;
+      position: relative;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* --- Video Background --- */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    /* Fallback animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(45deg, #1a0a00, #3d1f0f, #5c2e1a, #3d1f0f, #1a0a00);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Navigation --- */
+    nav {
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #f39c12;
+    }
+    nav .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+    }
+    nav .logo img {
+      height: 50px;
+      width: auto;
+      filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
+      transition: transform 0.3s;
+    }
+    nav .logo:hover img {
+      transform: scale(1.1);
+    }
+    nav ul { 
+      list-style: none; 
+      display: flex; 
+      gap: 30px; 
+    }
+    nav ul li a {
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    nav ul li a:hover { 
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      height: 50vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(230, 126, 34, 0.2));
+      text-align: center;
+      position: relative;
+      margin-top: 90px;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 0;
+    }
+    .hero h1 {
+      position: relative;
+      font-size: 3.5rem;
+      z-index: 1;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 2px 2px 20px rgba(0,0,0,0.8);
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- Services Section --- */
+    .services {
+      padding: 80px 50px;
+      text-align: center;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .services h2 {
+      font-size: 2.8rem;
+      color: #f39c12;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+    }
+    .services-subtitle {
+      font-size: 1.2rem;
+      color: #ddd;
+      margin-bottom: 50px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+    }
+    .service-card {
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(13, 13, 13, 0.9));
+      backdrop-filter: blur(10px);
+      padding: 40px 30px;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: transform 0.5s, box-shadow 0.3s, border-color 0.3s;
+      border: 1px solid rgba(243, 156, 18, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(243, 156, 18, 0.1), transparent);
+      transition: left 0.5s;
+    }
+    .service-card:hover::before {
+      left: 100%;
+    }
+    .service-card:hover {
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(243, 156, 18, 0.4);
+      border-color: #f39c12;
+    }
+    .service-icon {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
+    }
+    .service-card h3 {
+      font-size: 1.6rem;
+      color: #f39c12;
+      margin-bottom: 15px;
+      transition: letter-spacing 0.3s;
+    }
+    .service-card:hover h3 {
+      letter-spacing: 1px;
+    }
+    .service-card p {
+      color: #ddd;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    /* --- CTA Section --- */
+    .cta-section {
+      padding: 60px 50px;
+      text-align: center;
+      background: rgba(243, 156, 18, 0.1);
+      backdrop-filter: blur(10px);
+      margin: 50px 50px;
+      border-radius: 20px;
+      border: 1px solid rgba(243, 156, 18, 0.3);
+    }
+    .cta-section h2 {
+      font-size: 2.2rem;
+      color: #f39c12;
+      margin-bottom: 20px;
+    }
+    .cta-section p {
+      font-size: 1.1rem;
+      color: #ddd;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-btn {
+      display: inline-block;
+      padding: 15px 40px;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      color: #000;
+      font-weight: bold;
+      border-radius: 50px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 5px 20px rgba(243, 156, 18, 0.4);
+    }
+    .cta-btn:hover {
+      transform: scale(1.1) translateY(-5px);
+      box-shadow: 0 10px 40px rgba(243, 156, 18, 0.6);
+    }
+
+    /* --- Footer --- */
+    footer {
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 40px 50px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+      border-top: 1px solid rgba(243, 156, 18, 0.2);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      nav {
+        padding: 15px 20px;
+        flex-direction: column;
+        gap: 15px;
+      }
+      nav ul { 
+        gap: 15px;
+        font-size: 0.9rem;
+      }
+      .hero { 
+        margin-top: 140px;
+        height: 40vh;
+      }
+      .hero h1 { font-size: 2.2rem; }
+      .services {
+        padding: 60px 20px;
+      }
+      .services h2 {
+        font-size: 2rem;
+      }
+      .services-grid {
+        gap: 25px;
+      }
+      .cta-section {
+        margin: 30px 20px;
+        padding: 40px 20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated Background (fallback) -->
+  <div class="bg-animation"></div>
+
+  <!-- Video Background -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="https://www.pexels.com/download/video/11679882/" type="video/mp4">
+  </video>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="logo">
+      <img src="https://harbor-cellars.github.io/Singapore.com/assets/images/logo.png" alt="Harbor Cellars Logo" onerror="this.style.display='none'">
+      <span>Harbor Cellars</span>
+    </div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Our Premium Services</h1>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services">
+    <h2>What We Offer</h2>
+    <p class="services-subtitle">Experience excellence in every aspect of our wine services, from distribution to customer care.</p>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🚚</div>
+        <h3>Distribution</h3>
+        <p>We ensure timely delivery of premium wines across the country with our reliable distribution network. Temperature-controlled transport guarantees quality.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">📦</div>
+        <h3>Logistics</h3>
+        <p>Our logistics team carefully handles every bottle, maintaining the highest quality during transportation and storage in climate-controlled facilities.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💬</div>
+        <h3>Customer Support</h3>
+        <p>Our dedicated customer support team is ready to assist you with orders, recommendations, and inquiries anytime. Available 24/7 for your convenience.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🏢</div>
+        <h3>Corporate Services</h3>
+        <p>We provide custom corporate wine solutions, from gifting to special events, tailored for businesses of all sizes with personalized consultation.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🍷</div>
+        <h3>Wine Consultation</h3>
+        <p>Expert sommeliers provide personalized wine recommendations and pairing suggestions to enhance your dining experiences and special occasions.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎓</div>
+        <h3>Wine Education</h3>
+        <p>Join our wine tasting events and educational workshops to deepen your knowledge and appreciation of fine wines from around the world.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <h2>Ready to Experience Our Services?</h2>
+    <p>Contact us today to learn more about how Harbor Cellars can meet your wine needs with excellence and professionalism.</p>
+    <a href="contact.html" class="cta-btn">Get In Touch</a>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Harbor Cellars. All rights reserved. | Contact: info@harborcellars.com
+  </footer>
+
+  <!-- GSAP Animations -->
+  <script>
+    // Check if GSAP is loaded
+    if (typeof gsap !== 'undefined') {
+      gsap.from(".services h2", { duration: 1, opacity: 0, y: 50 });
+      gsap.from(".services-subtitle", { duration: 1, opacity: 0, y: 30, delay: 0.2 });
+      gsap.from(".service-card", { duration: 1, opacity: 0, y: 50, stagger: 0.15, ease: "power3.out" });
+      gsap.from(".cta-section", { duration: 1, opacity: 0, scale: 0.9, delay: 0.5 });
+    }
+
+    // Video error handling
+    const video = document.getElementById('bg-video');
+    if (video) {
+      video.addEventListener('error', function() {
+        console.log('Video failed to load, using animated background');
+      });
+    }
+  </script>
+</body>
+</html>

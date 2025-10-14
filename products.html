@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Wines - Harbor Cellars</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000;
+      color: #fff;
+      line-height: 1.6;
+      position: relative;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* --- Video Background --- */
+    #bg-video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.3;
+    }
+    
+    /* Fallback animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: linear-gradient(45deg, #1a0a00, #3d1f0f, #5c2e1a, #3d1f0f, #1a0a00);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* --- Navigation --- */
+    nav {
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 2px solid #f39c12;
+    }
+    nav .logo { 
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.5rem; 
+      font-weight: bold;
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+      cursor: pointer;
+    }
+    nav .logo img {
+      height: 50px;
+      width: auto;
+      filter: drop-shadow(0 0 10px rgba(243, 156, 18, 0.5));
+      transition: transform 0.3s;
+    }
+    nav .logo:hover img {
+      transform: scale(1.1);
+    }
+    nav ul { list-style: none; display: flex; gap: 30px; }
+    nav ul li a { 
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    nav ul li a:hover { 
+      color: #f39c12;
+      text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      height: 50vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      margin-top: 90px;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.4);
+      z-index: 0;
+    }
+    .hero h1 {
+      position: relative;
+      font-size: 3.5rem;
+      z-index: 1;
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(2px 2px 20px rgba(0,0,0,0.8));
+      animation: fadeInUp 0.8s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- Search / Filter --- */
+    .search-bar {
+      text-align: center;
+      margin: 50px 0 30px 0;
+      animation: fadeIn 1s ease;
+    }
+    .search-bar input {
+      padding: 15px 25px;
+      width: 350px;
+      border-radius: 50px;
+      border: 2px solid #f39c12;
+      font-size: 1rem;
+      background: rgba(34, 34, 34, 0.8);
+      color: #fff;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    .search-bar input:focus {
+      outline: none;
+      border-color: #e67e22;
+      box-shadow: 0 0 20px rgba(243, 156, 18, 0.4);
+      transform: scale(1.05);
+    }
+    .search-bar input::placeholder {
+      color: #888;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* --- Product Grid --- */
+    #product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 35px;
+      padding: 0 50px 80px 50px;
+      min-height: 300px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .product-card {
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(13, 13, 13, 0.9));
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.4s ease, box-shadow 0.3s;
+      border: 1px solid rgba(243, 156, 18, 0.2);
+      position: relative;
+    }
+    .product-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(243, 156, 18, 0.15), transparent);
+      transition: left 0.5s;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .product-card:hover::before {
+      left: 100%;
+    }
+    .product-card:hover { 
+      transform: translateY(-15px) scale(1.03);
+      box-shadow: 0 20px 50px rgba(243, 156, 18, 0.4);
+      border-color: #f39c12;
+    }
+    .product-card img { 
+      width: 100%; 
+      height: 300px;
+      object-fit: cover;
+      display: block; 
+      background: linear-gradient(135deg, #2d1810, #1a0f08);
+      transition: transform 0.3s;
+    }
+    .product-card:hover img {
+      transform: scale(1.05);
+    }
+    .product-card h3 {
+      padding: 20px 15px 10px;
+      font-size: 1.3rem;
+      text-align: center;
+      color: #fff;
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-card p {
+      text-align: center;
+      padding: 10px 15px;
+      color: #f39c12;
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+    .product-card .stock {
+      text-align: center;
+      padding: 0 15px 15px;
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    .product-actions {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      padding-top: 0;
+    }
+    .product-card button {
+      flex: 1;
+      padding: 12px 0;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      z-index: 2;
+    }
+    .btn-order {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: #fff;
+    }
+    .btn-order:hover {
+      background: linear-gradient(45deg, #27ae60, #229954);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+    }
+    .btn-details {
+      background: linear-gradient(45deg, #f39c12, #e67e22);
+      color: #000;
+    }
+    .btn-details:hover { 
+      background: linear-gradient(45deg, #e67e22, #d35400);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(243, 156, 18, 0.4);
+    }
+
+    /* --- Modal --- */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+    .modal.active {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(13, 13, 13, 0.95));
+      backdrop-filter: blur(20px);
+      padding: 40px;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 2px solid rgba(243, 156, 18, 0.3);
+      box-shadow: 0 20px 60px rgba(243, 156, 18, 0.2);
+      animation: slideUp 0.4s ease;
+    }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .modal-content h2 {
+      color: #f39c12;
+      margin-bottom: 25px;
+      text-align: center;
+      font-size: 2rem;
+      text-shadow: 0 0 20px rgba(243, 156, 18, 0.5);
+    }
+    .modal-content input,
+    .modal-content textarea,
+    .modal-content select {
+      width: 100%;
+      padding: 15px;
+      margin-bottom: 15px;
+      border: 2px solid rgba(243, 156, 18, 0.3);
+      border-radius: 10px;
+      background: rgba(34, 34, 34, 0.8);
+      color: #fff;
+      font-family: 'Roboto', sans-serif;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    .modal-content input:focus,
+    .modal-content textarea:focus,
+    .modal-content select:focus {
+      outline: none;
+      border-color: #f39c12;
+      box-shadow: 0 0 15px rgba(243, 156, 18, 0.3);
+    }
+    .order-summary {
+      background: rgba(243, 156, 18, 0.1);
+      border: 1px solid rgba(243, 156, 18, 0.3);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .order-summary h3 {
+      color: #f39c12;
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      align-items: center;
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .order-item input[type="number"] {
+      width: 80px;
+      padding: 8px;
+      margin: 0;
+      text-align: center;
+    }
+    .order-total {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 0;
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #f39c12;
+      margin-top: 10px;
+      border-top: 2px solid rgba(243, 156, 18, 0.3);
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 25px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .btn-confirm {
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: #fff;
+    }
+    .btn-confirm:hover {
+      background: linear-gradient(45deg, #27ae60, #229954);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(46, 204, 113, 0.4);
+    }
+    .btn-cancel {
+      background: linear-gradient(45deg, #e74c3c, #c0392b);
+      color: #fff;
+    }
+    .btn-cancel:hover {
+      background: linear-gradient(45deg, #c0392b, #a93226);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+    }
+
+    /* Success Message */
+    .success-message {
+      position: fixed;
+      top: 100px;
+      right: 30px;
+      background: linear-gradient(45deg, #2ecc71, #27ae60);
+      color: #fff;
+      padding: 20px 30px;
+      border-radius: 15px;
+      display: none;
+      z-index: 2000;
+      box-shadow: 0 10px 30px rgba(46, 204, 113, 0.5);
+      animation: slideInRight 0.5s ease;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .success-message.show {
+      display: block;
+    }
+    @keyframes slideInRight {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 100px 0;
+      font-size: 1.3rem;
+      color: #f39c12;
+      animation: pulse 1.5s ease infinite;
+      grid-column: 1 / -1;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* --- Footer --- */
+    footer {
+      background: rgba(10, 10, 10, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 40px 50px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+      border-top: 1px solid rgba(243, 156, 18, 0.2);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      nav { 
+        padding: 15px 20px; 
+        flex-direction: column; 
+        gap: 15px; 
+      }
+      nav ul { gap: 15px; font-size: 0.9rem; }
+      .hero { 
+        margin-top: 140px;
+        height: 40vh;
+      }
+      .hero h1 { font-size: 2.2rem; }
+      .search-bar input { 
+        width: 85%;
+        max-width: 350px;
+      }
+      #product-grid { 
+        padding: 0 20px 60px 20px;
+        gap: 25px;
+        grid-template-columns: 1fr;
+      }
+      .modal-content {
+        padding: 25px;
+        width: 95%;
+      }
+      .success-message {
+        right: 15px;
+        left: 15px;
+        top: 80px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Animated Background (fallback) -->
+  <div class="bg-animation"></div>
+
+  <!-- Video Background -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="https://www.pexels.com/download/video/854063/" width="1280" type="video/mp4">
+  </video>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="index.html" class="logo">
+      <img src="https://harbor-cellars.github.io/Singapore.com/assets/images/logo.png" alt="Harbor Cellars Logo" onerror="this.style.display='none'">
+      <span>Harbor Cellars</span>
+    </a>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Our Premium Wine Collection</h1>
+  </section>
+
+  <!-- Search / Filter -->
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Search wines by name...">
+  </div>
+
+  <!-- Product Grid -->
+  <div id="product-grid">
+    <div class="loading">Loading our finest wines...</div>
+  </div>
+
+  <!-- Order Modal -->
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h2>🍷 Place Your Order</h2>
+      
+      <input type="text" id="customerName" placeholder="Your Full Name *" required>
+      <input type="email" id="customerEmail" placeholder="Your Email *" required>
+      <input type="tel" id="customerPhone" placeholder="Phone Number *" required>
+      <textarea id="customerAddress" placeholder="Delivery Address *" rows="3" required></textarea>
+      
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div class="order-item">
+          <span id="orderProductName" style="font-weight: bold; color: #fff;">Product Name</span>
+        </div>
+        <div class="order-item">
+          <span>Quantity:</span>
+          <input type="number" id="orderQuantity" min="1" value="1">
+        </div>
+        <div class="order-item">
+          <span>Price per bottle:</span>
+          <span id="orderPrice">$0</span>
+        </div>
+        <div class="order-item">
+          <span>Available Stock:</span>
+          <span id="availableStock">0</span>
+        </div>
+        <div class="order-total">
+          <span>Total Amount:</span>
+          <span id="orderTotal">$0</span>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn-confirm" id="confirmOrderBtn">✓ Confirm Order</button>
+        <button class="btn-cancel" id="closeOrderModalBtn">✕ Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Message -->
+  <div class="success-message" id="successMessage">
+    ✓ Order placed successfully!
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Harbor Cellars. All rights reserved. | Contact: info@harborcellars.com
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- JS: Main Application -->
+ <script>
+  const productGrid = document.getElementById("product-grid");
+  const searchInput = document.getElementById("searchInput");
+  const orderModal = document.getElementById("orderModal");
+  const successMessage = document.getElementById("successMessage");
+
+  // ✅ Replace these URLs with your actual MockAPI URLs
+  const PRODUCTS_API = "https://68e5c90621dd31f22cc2f478.mockapi.io/v1/products";
+  const ORDERS_API = "https://68e416768e116898997af68f.mockapi.io/v1/order";
+
+  let allProducts = [];
+  let currentProduct = null;
+
+  // Modal fields
+  const customerName = document.getElementById("customerName");
+  const customerEmail = document.getElementById("customerEmail");
+  const customerPhone = document.getElementById("customerPhone");
+  const customerAddress = document.getElementById("customerAddress");
+  const orderQuantity = document.getElementById("orderQuantity");
+  const orderProductName = document.getElementById("orderProductName");
+  const orderPrice = document.getElementById("orderPrice");
+  const orderTotal = document.getElementById("orderTotal");
+  const availableStock = document.getElementById("availableStock");
+  const confirmOrderBtn = document.getElementById("confirmOrderBtn");
+  const closeOrderModalBtn = document.getElementById("closeOrderModalBtn");
+
+  // Display products
+  function displayProducts(products) {
+    productGrid.innerHTML = "";
+    products.forEach((product) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      const imageUrl = product.imageUrl || "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=300&h=300&fit=crop";
+      card.innerHTML = `
+        <img src="${imageUrl}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>$${parseFloat(product.price).toFixed(2)}</p>
+        <div class="stock">📦 In Stock: ${product.stock} bottles</div>
+        <div class="product-actions">
+          <button class="btn-order" onclick="openOrderModal('${product.id}')">🛒 Order Now</button>
+          <button class="btn-details" onclick="window.location.href='product-detail.html?id=${product.id}'">📋 Details</button>
+        </div>
+      `;
+      productGrid.appendChild(card);
+    });
+  }
+
+  // Fetch products
+  async function loadProducts() {
+    try {
+      const res = await fetch(PRODUCTS_API);
+      if (!res.ok) throw new Error("Failed to load products");
+      allProducts = await res.json();
+      displayProducts(allProducts);
+    } catch (err) {
+      console.log("⚠️ Error loading products:", err.message);
+    }
+  }
+  loadProducts();
+
+  // Search filter
+  searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase().trim();
+    const filtered = allProducts.filter((p) => p.name.toLowerCase().includes(query));
+    displayProducts(filtered);
+  });
+
+  // 🛒 Open Order Modal
+  window.openOrderModal = function (productId) {
+    const product = allProducts.find((p) => p.id === productId);
+    if (!product) return alert("Product not found!");
+
+    currentProduct = product;
+    orderProductName.textContent = product.name;
+    orderPrice.textContent = `$${parseFloat(product.price).toFixed(2)}`;
+    availableStock.textContent = `${product.stock} bottles`;
+    orderQuantity.value = 1;
+    updateOrderTotal();
+
+    orderModal.classList.add("active");
+  };
+
+  closeOrderModalBtn.addEventListener("click", closeOrderModal);
+
+  function closeOrderModal() {
+    orderModal.classList.remove("active");
+    currentProduct = null;
+  }
+
+  // Update total amount
+  function updateOrderTotal() {
+    const qty = parseInt(orderQuantity.value) || 1;
+    const total = (currentProduct?.price || 0) * qty;
+    orderTotal.textContent = `$${total.toFixed(2)}`;
+  }
+  orderQuantity.addEventListener("input", updateOrderTotal);
+
+  // ✅ Confirm Order
+  confirmOrderBtn.addEventListener("click", async () => {
+    if (!currentProduct) return alert("⚠️ No product selected!");
+
+    const name = customerName.value.trim();
+    const email = customerEmail.value.trim();
+    const phone = customerPhone.value.trim();
+    const address = customerAddress.value.trim();
+    const quantity = parseInt(orderQuantity.value);
+
+    if (!name || !email || !phone || !address)
+      return alert("⚠️ Please fill in all fields!");
+
+    const orderData = {
+      productId: currentProduct.id,
+      productName: currentProduct.name,
+      quantity: quantity,
+      pricePerBottle: currentProduct.price,
+      totalAmount: currentProduct.price * quantity,
+      name,
+      email,
+      phone,
+      address,
+      status: "pending",
+      orderDate: new Date().toISOString(),
+    };
+
+    try {
+      confirmOrderBtn.disabled = true;
+      confirmOrderBtn.textContent = "⏳ Submitting...";
+
+      const res = await fetch(ORDERS_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!res.ok) throw new Error("Order failed");
+
+      // 🎉 Success message
+      successMessage.classList.add("show");
+      setTimeout(() => successMessage.classList.remove("show"), 4000);
+      closeOrderModal();
+    } catch (err) {
+      alert("❌ Error submitting order: " + err.message);
+    } finally {
+      confirmOrderBtn.disabled = false;
+      confirmOrderBtn.textContent = "✓ Confirm Order";
+    }
+  });
+</script>
+</body>
+</html>

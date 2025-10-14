@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Harbor Cellars</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #000;
+      color: #fff;
+      line-height: 1.6;
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* --- Navigation --- */
+    nav {
+      width: 100%;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.9);
+      border-bottom: 2px solid #f39c12;
+    }
+    nav .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    nav .logo-container img {
+      height: 50px;
+      width: auto;
+    }
+    nav .logo-container .logo-text { 
+      font-size: 1.5rem; 
+      font-weight: bold;
+      color: #f39c12;
+    }
+    nav ul { list-style: none; display: flex; gap: 30px; }
+    nav ul li a { 
+      transition: color 0.3s;
+    }
+    nav ul li a:hover { color: #f39c12; }
+
+    /* --- Hero Section with Video Background --- */
+    .hero {
+      height: 30vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      margin-top: 80px;
+      overflow: hidden;
+    }
+    .hero video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      z-index: 0;
+      object-fit: cover;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+    .hero h1 {
+      position: relative;
+      font-size: 3rem;
+      z-index: 2;
+      color: #f39c12;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
+
+    /* --- Product Detail Section --- */
+    .product-detail {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 50px;
+      gap: 50px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .product-images {
+      flex: 1 1 400px;
+    }
+    .product-images img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+      background: #222;
+    }
+    .product-images img:hover {
+      transform: scale(1.05);
+    }
+    .product-info {
+      flex: 1 1 400px;
+      background: #111;
+      padding: 30px;
+      border-radius: 12px;
+    }
+    .product-info h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #f39c12;
+    }
+    .product-info p {
+      margin-bottom: 15px;
+      color: #ddd;
+    }
+    .product-info .price {
+      font-size: 1.5rem;
+      color: #f39c12;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    .product-info .stock {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #aaa;
+    }
+    .product-info .btn {
+      display: inline-block;
+      padding: 15px 35px;
+      background: #f39c12;
+      color: #000;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .product-info .btn:hover { 
+      transform: scale(1.05);
+      background: #e67e22;
+    }
+
+    .loading {
+      text-align: center;
+      color: #888;
+      font-size: 1.2rem;
+    }
+
+    .error {
+      color: #e74c3c;
+    }
+
+    /* --- Footer --- */
+    footer {
+      background: #111;
+      padding: 40px 50px;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #aaa;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      nav { padding: 15px 20px; flex-direction: column; gap: 15px; }
+      nav ul { gap: 15px; }
+      nav .logo-container img { height: 40px; }
+      .hero { margin-top: 140px; }
+      .product-detail { flex-direction: column; padding: 40px 20px; gap: 30px; }
+      .hero h1 { font-size: 2rem; }
+      .product-images img { height: 300px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="logo-container">
+      <img src="https://harbor-cellars.github.io/Singapore.com/assets/images/logo.png" alt="Harbor Cellars Logo" onerror="this.style.display='none'">
+      <span class="logo-text">Harbor Cellars</span>
+    </div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="products.html">Products</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section with Video Background -->
+  <section class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="https://www.pexels.com/download/video/7426748/" type="video/mp4">
+      <source src="https://www.pexels.com/download/video/3188954/" type="video/webm">
+    </video>
+    <h1>Product Details</h1>
+  </section>
+
+  <!-- Product Detail -->
+  <section class="product-detail">
+    <div class="product-images">
+      <img id="productImage" src="https://via.placeholder.com/400x500/2d1810/f39c12?text=Loading..." alt="Product Image">
+    </div>
+    <div class="product-info">
+      <h2 id="productName" class="loading">Loading...</h2>
+      <p id="productDesc" class="loading">Please wait while we load the product details.</p>
+      <p class="price" id="productPrice">$0.00</p>
+      <p class="stock" id="productStock">Stock: 0</p>
+      <a href="products.html" class="btn">Back to Products</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Harbor Cellars. All rights reserved. | Contact: info@harborcellars.com
+  </footer>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- JS: Fetch product from MockAPI -->
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get('id');
+
+    const productImage = document.getElementById("productImage");
+    const productName = document.getElementById("productName");
+    const productDesc = document.getElementById("productDesc");
+    const productPrice = document.getElementById("productPrice");
+    const productStock = document.getElementById("productStock");
+
+    const apiURL = `https://68e5c90621dd31f22cc2f478.mockapi.io/v1/products`;
+
+    if (!productId) {
+      productName.textContent = "No Product Selected";
+      productName.classList.add('error');
+      productDesc.textContent = "Please select a product from the products page.";
+      productDesc.classList.add('error');
+      productPrice.textContent = "";
+      productStock.textContent = "";
+    } else {
+      fetch(`${apiURL}/${productId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Product not found');
+          return res.json();
+        })
+        .then(product => {
+          const imageUrl = product.imageUrl || product.image || 'https://via.placeholder.com/400x500/2d1810/f39c12?text=Wine';
+          const name = product.name || 'Unnamed Product';
+          const description = product.description || 'No description available.';
+          const price = product.price || '0';
+          const stock = product.stock !== undefined ? product.stock : 'N/A';
+
+          productImage.src = imageUrl;
+          productImage.onerror = function() {
+            this.src = 'https://via.placeholder.com/400x500/2d1810/f39c12?text=Wine';
+          };
+          
+          productName.textContent = name;
+          productName.classList.remove('loading');
+          
+          productDesc.textContent = description;
+          productDesc.classList.remove('loading');
+          
+          productPrice.textContent = `$${price}`;
+          productStock.textContent = `Stock: ${stock}`;
+
+          if (typeof gsap !== 'undefined') {
+            gsap.from(".product-images img", { 
+              duration: 1, 
+              opacity: 0, 
+              x: -50,
+              ease: "power3.out"
+            });
+            gsap.from(".product-info", { 
+              duration: 1, 
+              opacity: 0, 
+              x: 50,
+              ease: "power3.out"
+            });
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch product:", err);
+          productName.textContent = "Product Not Found";
+          productName.classList.add('error');
+          productName.classList.remove('loading');
+          
+          productDesc.textContent = "We couldn't find the requested product. It may have been removed or the ID is incorrect.";
+          productDesc.classList.add('error');
+          productDesc.classList.remove('loading');
+          
+          productPrice.textContent = "";
+          productStock.textContent = "";
+          
+          productImage.src = 'https://via.placeholder.com/400x500/2d1810/f39c12?text=Not+Found';
+        });
+    }
+  </script>
+</body>
+</html>
